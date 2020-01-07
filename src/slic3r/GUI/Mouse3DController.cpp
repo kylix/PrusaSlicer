@@ -544,7 +544,7 @@ bool Mouse3DController::connect_device()
     {
         if (device.second.size() == 1)
         {
-#ifdef __linux__
+#ifdef #if defined(__linux__) || defined(__APPLE__)
             hid_device* test_device = hid_open(device.first.first, device.first.second, nullptr);
             if (test_device != nullptr)
             {
@@ -552,7 +552,7 @@ bool Mouse3DController::connect_device()
 #else
             if (device.second.front().has_valid_usage())
             {
-#endif // __linux__
+#endif // __linux__ || __APPLE__
                 vendor_id = device.first.first;
                 product_id = device.first.second;
                 break;
@@ -569,7 +569,7 @@ bool Mouse3DController::connect_device()
 #if ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
                 std::cout << "Test device: " << std::hex << device.first.first << std::dec << "/" << std::hex << device.first.second << std::dec << " \"" << data.path << "\"";
 #endif // ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
-#ifdef __linux__
+#if defined(__linux__) || defined(__APPLE__)
                 hid_device* test_device = hid_open_path(data.path.c_str());
                 if (test_device != nullptr)
                 {
@@ -595,7 +595,7 @@ bool Mouse3DController::connect_device()
 #endif // ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
                     break;
                 }
-#endif // __linux__
+#endif // __linux__ || __APPLE__
 #if ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
                 else
                     std::cout << "-> NOT PASSED" << std::endl;
