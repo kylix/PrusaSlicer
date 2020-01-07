@@ -544,7 +544,7 @@ bool Mouse3DController::connect_device()
     {
         if (device.second.size() == 1)
         {
-#ifdef #if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__) || defined(__APPLE__)
             hid_device* test_device = hid_open(device.first.first, device.first.second, nullptr);
             if (test_device != nullptr)
             {
