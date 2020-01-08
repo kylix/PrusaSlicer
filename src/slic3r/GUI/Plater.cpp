@@ -2901,7 +2901,7 @@ void Plater::priv::HollowJob::process()
 void Plater::priv::HollowJob::finalize()
 {
     if (auto gizmo = get_gizmo()) {
-        gizmo->update_mesh_raycaster(std::move(m_output_raycaster));
+//        gizmo->update_mesh_raycaster(std::move(m_output_raycaster));
         gizmo->update_hollowed_mesh(std::move(m_output_mesh));
     }       
 }
@@ -5010,7 +5010,7 @@ void Plater::reslice()
     p->preview->update_view_type(true);
 }
 
-void Plater::reslice_SLA_supports(const ModelObject &object, bool postpone_error_messages)
+void Plater::reslice(const ModelObject &object, SLAPrintObjectStep laststep, bool postpone_error_messages)
 {
     //FIXME Don't reslice if export of G-code or sending to OctoPrint is running.
     // bitmask of UpdateBackgroundProcessReturnState
@@ -5025,12 +5025,14 @@ void Plater::reslice_SLA_supports(const ModelObject &object, bool postpone_error
     // Limit calculation to the single object only.
     PrintBase::TaskParams task;
     task.single_model_object = object.id();
+    
     // If the background processing is not enabled, calculate supports just for the single instance.
     // Otherwise calculate everything, but start with the provided object.
     if (!this->p->background_processing_enabled()) {
         task.single_model_instance_only = true;
-        task.to_object_step = slaposPad;
+        task.to_object_step = int(laststep);
     }
+    
     this->p->background_process.set_task(task);
     // and let the background processing start.
     this->p->restart_background_process(state | priv::UPDATE_BACKGROUND_PROCESS_FORCE_RESTART);

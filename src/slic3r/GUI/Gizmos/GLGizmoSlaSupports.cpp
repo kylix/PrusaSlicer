@@ -1243,7 +1243,7 @@ bool GLGizmoSlaSupports::has_backend_supports() const
 
 void GLGizmoSlaSupports::reslice_SLA_supports(bool postpone_error_messages) const
 {
-    wxGetApp().CallAfter([this, postpone_error_messages]() { wxGetApp().plater()->reslice_SLA_supports(*m_c->m_model_object, postpone_error_messages); });
+    wxGetApp().CallAfter([this, postpone_error_messages]() { wxGetApp().plater()->reslice(*m_c->m_model_object, slaposPad, postpone_error_messages); });
 }
 
 void GLGizmoSlaSupports::get_data_from_backend()
