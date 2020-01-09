@@ -421,7 +421,7 @@ bool Mouse3DController::connect_device()
     // check time since last detection took place
     if (std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::high_resolution_clock::now() - m_last_time).count() < DETECTION_TIME_MS)
         return false;
-
+    
     m_last_time = std::chrono::high_resolution_clock::now();
 
     // Enumerates devices
@@ -569,21 +569,28 @@ bool Mouse3DController::connect_device()
 #if ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
                 std::cout << "Test device: " << std::hex << device.first.first << std::dec << "/" << std::hex << device.first.second << std::dec << " \"" << data.path << "\"";
 #endif // ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
-#if defined(__linux__) || defined(__APPLE__)
-                hid_device* test_device = hid_open_path(data.path.c_str());
-                if (test_device != nullptr)
+#ifdef __APPLE__
+                if(data.usage != 1)
                 {
-                    path = data.path;
-                    vendor_id = device.first.first;
-                    product_id = device.first.second;
-                    found = true;
+#endif//__APPLE__
+#if defined(__linux__) || defined(__APPLE__)
+                    hid_device* test_device = hid_open_path(data.path.c_str());
+                    if (test_device != nullptr)
+                    {
+                        path = data.path;
+                        vendor_id = device.first.first;
+                        product_id = device.first.second;
+                        found = true;
 #if ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
-                    std::cout << "-> PASSED" << std::endl;
+                        std::cout << "-> PASSED" << std::endl;
 #endif // ENABLE_3DCONNEXION_DEVICES_DEBUG_OUTPUT
-                    hid_close(test_device);
-                    break;
+                        hid_close(test_device);
+                        break;
+                    }
+#ifdef __APPLE__
                 }
-#else
+#endif//__APPLE__
+#else // !(__linux__ || __APPLE__)
                 if (data.has_valid_usage())
                 {
                     path = data.path;
