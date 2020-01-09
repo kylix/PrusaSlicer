@@ -544,7 +544,7 @@ bool Mouse3DController::connect_device()
     {
         if (device.second.size() == 1)
         {
-#if defined(__linux__) || defined(__APPLE__)
+#if defined(__linux__)// || defined(__APPLE__)
             hid_device* test_device = hid_open(device.first.first, device.first.second, nullptr);
             if (test_device != nullptr)
             {
@@ -552,7 +552,7 @@ bool Mouse3DController::connect_device()
 #else
             if (device.second.front().has_valid_usage())
             {
-#endif // __linux__ || __APPLE__
+#endif // __linux__ 
                 vendor_id = device.first.first;
                 product_id = device.first.second;
                 break;
